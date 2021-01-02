@@ -21,14 +21,21 @@ navbarMenu.addEventListener('click', (event) => {
   const link = target.dataset.link;
   if(link == null) {
     return;
-  }else
-  {
-    console.log(event.target.dataset.link);
-    const scrollTo = document.querySelector(link);
-    scrollTo.scrollIntoView({behavior: "smooth"});
+  }else  {
+    scrollIntoView(link);
   }
 });
 
+// Handle contact button on home
+const homeBtn = document.querySelector('.home__contact');
+homeBtn.addEventListener('click', () => {
+  scrollIntoView('#contact');
+});
+
+function scrollIntoView(selector){
+  const scrollTo = document.querySelector(selector);
+  scrollTo.scrollIntoView({behavior: "smooth"});
+}
 
 
 
