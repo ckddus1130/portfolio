@@ -33,7 +33,6 @@ homeBtn.addEventListener('click', () => {
 });
 
 
-
 // 스크롤 내릴 때 홈부분 천천히 fade out
 const home = document.querySelector('.home__content');
 const homeHeight = home.getBoundingClientRect().height;
@@ -48,4 +47,25 @@ function scrollIntoView(selector){
   scrollTo.scrollIntoView({behavior: "smooth"});
 }
 
+//Show arrow up button when scrolling down  
+// const arrowUp= document.querySelector('.arrow-up-btn');
+// arrowUp.addEventListener('click', ()=> {
+//     scrollIntoView('#home');
+// });
+
+// Show arrow up button when scrolling down
+const arrowUp = document.querySelector('.arrow-up-btn');
+document.addEventListener('scroll', () => {
+  if(window.scrollY > homeHeight / 2){
+    arrowUp.classList.add('visible');
+    
+  }else{
+    arrowUp.classList.remove('visible');
+  }
+});
+
+// Handle click one the 'Arrow up' button
+arrowUp.addEventListener('click', () => {
+  scrollIntoView('#home');
+})
 
