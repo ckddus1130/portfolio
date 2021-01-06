@@ -350,6 +350,10 @@ p {
   margin: 2px;
 }
 
+.project.invisible {
+  display: none;
+}
+
 .project__img {
   max-width: 100%;
   max-width: 100%;

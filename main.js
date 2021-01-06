@@ -69,3 +69,25 @@ arrowUp.addEventListener('click', () => {
   scrollIntoView('#home');
 })
 
+//Projects filtering
+const workBtnContainer = document.querySelector('.work__categories');
+const projectContainer = document.querySelector('.work__projects');
+const projects = document.querySelectorAll('.project'); //querySelectorAll은 배열로 가져와줍니다.
+
+workBtnContainer.addEventListener('click', (e) => {
+  // || 뒷부분 category__btn 부분은 data설정이 안되어 있어서 아래와  같은 방식으로 가져온다.
+  const filter = e.target.dataset.filter || e.target.parentNode.dataset.filter;
+  if(filter == null){
+    return;
+  }
+
+  projects.forEach((project) => {
+    console.log(project.dataset.type);
+    if(filter === '*' || filter === project.dataset.type){
+      project.classList.remove('invisible');
+    } else{
+      project.classList.add('invisible');
+    }
+  });
+  
+})
