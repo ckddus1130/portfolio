@@ -81,13 +81,20 @@ workBtnContainer.addEventListener('click', (e) => {
     return;
   }
 
-  projects.forEach((project) => {
-    console.log(project.dataset.type);
-    if(filter === '*' || filter === project.dataset.type){
-      project.classList.remove('invisible');
-    } else{
-      project.classList.add('invisible');
-    }
-  });
+  projectContainer.classList.add('anim-out');
   
-})
+  //애니메이션이 적용되면서 필터링된 작업물이 나와야 되기때문에
+  // setTimeout을 사용해서 간격을 둠으로써 자연스러운 애니메이션이 됩니다.
+  setTimeout(() => {
+    projects.forEach((project) => {
+      console.log(project.dataset.type);
+      if(filter === '*' || filter === project.dataset.type){
+        project.classList.remove('invisible');
+      } else{
+        project.classList.add('invisible');
+      }
+    });
+    projectContainer.classList.remove('anim-out');
+  }, 300);
+  
+});
