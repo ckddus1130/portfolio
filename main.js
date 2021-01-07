@@ -81,13 +81,21 @@ workBtnContainer.addEventListener('click', (e) => {
     return;
   }
 
+  //Remove selection from the previous item and select the new one
+  const active = document.querySelector('.category__btn.selected');
+  active.classList.remove('selected');
+  // 기존 target은 category__btn 부분인데 category__count 부분을 클릭하면 버튼이 아니라 오류가 발생
+  // 그래서 span의 parentNode가 button임을 이용해서 아래와 같이 문제 해결
+  const target = e.target.nodeName === 'BUTTON' ? e.target : e.target.parentNode;
+  target.classList.add('selected');
+
   projectContainer.classList.add('anim-out');
   
   //애니메이션이 적용되면서 필터링된 작업물이 나와야 되기때문에
   // setTimeout을 사용해서 간격을 둠으로써 자연스러운 애니메이션이 됩니다.
   setTimeout(() => {
     projects.forEach((project) => {
-      console.log(project.dataset.type);
+      //console.log(project.dataset.type);
       if(filter === '*' || filter === project.dataset.type){
         project.classList.remove('invisible');
       } else{
@@ -96,5 +104,5 @@ workBtnContainer.addEventListener('click', (e) => {
     });
     projectContainer.classList.remove('anim-out');
   }, 300);
-  
 });
+
