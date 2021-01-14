@@ -25,6 +25,7 @@ navbarMenu.addEventListener('click', (event) => {
   }else  {
     navbarMenu.classList.remove('open');
     scrollIntoView(link);
+    selectNavItem(target);
   }
 });
 
@@ -50,10 +51,7 @@ document.addEventListener('scroll', () => {
   home.style.opacity = 1- window.scrollY/ homeHeight;
 });
 
-function scrollIntoView(selector){
-  const scrollTo = document.querySelector(selector);
-  scrollTo.scrollIntoView({behavior: "smooth"});
-}
+
 
 //Show arrow up button when scrolling down  
 // const arrowUp= document.querySelector('.arrow-up-btn');
@@ -113,4 +111,82 @@ workBtnContainer.addEventListener('click', (e) => {
     projectContainer.classList.remove('anim-out');
   }, 300);
 });
+// intersectionobserver 패턴 적용하기
+// 1. 모든 섹션 요소들과 메뉴아이템들을 가지고 온다.
+// 2. IntersectionObserver를 이용해서 모든 섹션들을 관찰한다.
+// 3. 보여지는 섹션에 해당하는 메뉴 야이템을 활성화 시킨다.
 
+const sectionIds = [
+  '#home',
+  '#about',
+  '#skills',
+  '#work',
+  '#testimonials',
+  '#contact',
+];
+
+const sections = sectionIds.map(id => document.querySelector(id));
+const navItems = sectionIds.map(id=> 
+  document.querySelector(`[data-link="${id}"]`));
+//console.log(sections);
+//console.log(navItems);
+
+let selectedNavIndex= 0;
+let selectedNavItem = navItems[0];
+
+function selectNavItem(selected) {
+  selectedNavItem.classList.remove('active');
+  selectedNavItem = selected;
+  selectedNavItem.classList.add('active');
+}
+
+function scrollIntoView(selector){
+  const scrollTo = document.querySelector(selector);
+  scrollTo.scrollIntoView({behavior: "smooth"});
+  selectNavItem(navItems[sectionIds.indexOf(selector)]);
+}
+
+const observerOptions = {
+  root: null,  // null은 viewport
+  rootMargin: '0px',
+  threshold: 0.3,
+}
+const observerCallback = (entries, observer) => {
+  entries.forEach(entry => {
+    // 빠져 나갈 때  
+    // testimonials 가 표시 되는 이유는 intersectionratio가 0 시작하자마자 섹션들이 밖으로 나가서 발생하는 현상
+    if(!entry.isIntersecting && entry.intersectionRatio > 0) {
+      const index = sectionIds.indexOf(`#${entry.target.id}`);
+      //console.log(index, entry.target.id);
+      // -값은 스크롤링이 아래로 되어서 페이지가 올라옴
+      if(entry.boundingClientRect.y < 0){
+        selectedNavIndex = index + 1;
+      }else {
+        //페이지가 내려가는 경우
+        selectedNavIndex = index - 1;
+      }
+    }
+  });
+};
+
+const observer = new IntersectionObserver(observerCallback, observerOptions);
+sections.forEach(section => observer.observe(section));
+
+// 윈도우가 클 때 home과 contact은 적용 안되는 문제가 발생
+// 스크롤 이벤트는 스크롤 될 때마다 발생 클릭했을 때 발생하는 스크롤
+// wheel 이벤트는 사용자가 직접 스코롤 할 때 발생
+
+window.addEventListener('wheel', () => {
+  if(window.scrollY === 0 ) {
+    selectedNavIndex = 0;
+  } else if (
+    // window의 scroll Y와 보여지는 window의 높이(view port) 의 합이 
+    // document의 전체 높이와 같을 경우 (사용자가 페이지의 마지막까지 wheel 했을 경우) 
+    Math.round(window.scrollY + window.innerHeight) >=
+    document.body.clientHeight
+    ) {
+      //  navItems의 길이(6)에서 1을 뺀 5번째의 인덱스를 선택
+    selectedNavIndex = navItems.length - 1;
+  }
+  selectNavItem(navItems[selectedNavIndex]);
+});
